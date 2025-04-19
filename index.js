@@ -15,7 +15,7 @@ const config = {
 const client = new line.Client(config);
 
 // LINEからのメッセージを受け取る入り口
-app.post('https://my-line-bot-bsoj.onrender.com/webhook', line.middleware(config), (req, res) => {
+app.post('/webhook', line.middleware(config), (req, res) => {
   // 届いたメッセージを全部処理する
   Promise.all(req.body.events.map(handleEvent))
     .then((result) => res.json(result))
