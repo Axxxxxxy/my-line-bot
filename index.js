@@ -37,16 +37,20 @@ async function handleEvent(event) {
         replyToken: event.replyToken
       });
   
-      await axios.post(MAKE_WEBHOOK, {
-        replyToken: event.replyToken,
-        userId: event.source.userId,
-        timestamp: event.timestamp,
-        action: 'show_faq_clicked'
-      }, {
-        headers: {
-          'Content-Type': 'application/json'  // ← ここが重要！
+      await axios.post(
+        MAKE_WEBHOOK,
+        JSON.stringify({
+          replyToken: event.replyToken,
+          userId: event.source.userId,
+          timestamp: event.timestamp,
+          action: 'show_faq_clicked'
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }
-      });
+      );
   
       return; // ここで処理を終える
     } catch (error) {
