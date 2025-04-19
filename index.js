@@ -30,14 +30,24 @@ async function handleEvent(event) {
       // FAQボタンのpostbackを受け取ったとき、GASにreplyTokenを送る
   if (event.type === 'postback' && event.postback.data === 'action=show_faq') {
     const GAS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbywYe3XO2E9evAcy8Gx7y66LVJWdgBA7Zq8uTyXVcDGYzm1cDyATFOmGUL7ymDrhQxXPQ/exec'; // ← あなたのGAS URLに変更
-
+    const MAKE_WEBHOOK = 'https://hook.us2.make.com/34g8xinfedog8n1x0n4v9oylhredvfo9'; // ← あなたのMake URLに差し替えて
     try {
+      // GASに送る
       await axios.post(GAS_WEBHOOK, {
         replyToken: event.replyToken
       });
-      return; // この時点で処理を終える（GASが返信処理を行う）
+  
+      // Makeにも送る（追加）
+      await axios.post(MAKE_WEBHOOK, {
+        replyToken: event.replyToken,
+        userId: event.source.userId,
+        timestamp: event.timestamp,
+        action: 'show_faq_clicked'
+      });
+  
+      return; // ここで処理を終える
     } catch (error) {
-      console.error('GAS連携エラー:', error);
+      console.error('Webhook送信エラー:', error);
     }
   }
   // 「FAQ」ボタンが押されたとき
