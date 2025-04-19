@@ -30,7 +30,7 @@ async function handleEvent(event) {
       // FAQボタンのpostbackを受け取ったとき、GASにreplyTokenを送る
   if (event.type === 'postback' && event.postback.data === 'action=show_faq') {
     const GAS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbywYe3XO2E9evAcy8Gx7y66LVJWdgBA7Zq8uTyXVcDGYzm1cDyATFOmGUL7ymDrhQxXPQ/exec'; // ← あなたのGAS URLに変更
-    const MAKE_WEBHOOK = 'https://hook.us2.make.com/ewfy97qt58utu8ku40zs6jghchp58g7n'; // ← あなたのMake URLに差し替えて
+    const MAKE_WEBHOOK = 'https://hook.us2.make.com/6cakpvfpaxcm6x7mx3l98ez7bmjtwuu6'; // ← あなたのMake URLに差し替えて
     try {
       // GASに送る
       await axios.post(GAS_WEBHOOK, {
