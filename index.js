@@ -6,8 +6,8 @@ require('dotenv').config();
 
 // LINE bot 設定
 const config = {
-  channelAccessToken: process.env.nRggOpbPZ6ieHRjZNgROx+erc+dyXc5//iNknXfKGMqdRiGK2SzYjRAH/82YesDtA6VkZq3nXHutnv0WNC6DqK9yw9JMf2jl5qhca8t2MkcuvupnfkrtY9z8m4geSfGJ0zelnhSG9VXW1yYd61u1GgdB04t89/1O/w1cDnyilFU=,
-  channelSecret: process.env.071e03582ee1954711512992614333be
+  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
+  channelSecret: process.env.CHANNEL_SECRET
 };
 const client = new line.Client(config);
 app.use(express.json());
