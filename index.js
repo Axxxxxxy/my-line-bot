@@ -10,6 +10,16 @@ const config = {
   channelSecret: process.env.CHANNEL_SECRET
 };
 const client = new line.Client(config);
+// LINE SDKのmiddlewareは、rawBodyが必要なので express.json() より先
+app.post('/webhook', line.middleware(config), (req, res) => {
+  Promise.all(req.body.events.map(handleEvent))
+    .then((result) => res.json(result))
+    .catch((err) => {
+      console.error(err);
+      res.status(500).end();
+    });
+});
+// JSON解析は /webhook 以外で必要な場合のみ使う
 app.use(express.json());
 
 // Webhook入り口
