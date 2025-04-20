@@ -22,16 +22,6 @@ app.post('/webhook', line.middleware(config), (req, res) => {
 // JSON解析は /webhook 以外で必要な場合のみ使う
 app.use(express.json());
 
-// Webhook入り口
-app.post('/webhook', line.middleware(config), (req, res) => {
-  Promise.all(req.body.events.map(handleEvent))
-    .then((result) => res.json(result))
-    .catch((err) => {
-      console.error(err);
-      res.status(500).end();
-    });
-});
-
 // 各Webhook送信先
 const GAS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbywYe3XO2E9evAcy8Gx7y66LVJWdgBA7Zq8uTyXVcDGYzm1cDyATFOmGUL7ymDrhQxXPQ/exec';
 const MAKE_WEBHOOK = 'https://hook.us2.make.com/6cakpvfpaxcm6x7mx3l98ez7bmjtwuu6'; // ←差し替えて
