@@ -4,6 +4,9 @@ const axios = require('axios');
 const app = express();
 require('dotenv').config();
 
+// Flexメッセージのデータを読み込み (flexMessages.jsonから)
+const flexMessageData = require('./flexMessages.json');
+
 // LINE bot 設定
 const config = {
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
@@ -25,6 +28,28 @@ app.use(express.json());
 // 各Webhook送信先
 const GAS_WEBHOOK = 'https://script.google.com/macros/s/AKfycbywYe3XO2E9evAcy8Gx7y66LVJWdgBA7Zq8uTyXVcDGYzm1cDyATFOmGUL7ymDrhQxXPQ/exec';
 const MAKE_WEBHOOK = 'https://hook.us2.make.com/6cakpvfpaxcm6x7mx3l98ez7bmjtwuu6'; // ←差し替えて
+
+// 商品カタログ表示用のエンドポイント追加
+app.get('/show-products', async (req, res) => {
+  const userId = req.query.userId;
+  
+  if (!userId) {
+    return res.status(400).send('ユーザーIDが必要です');
+  }
+  
+  try {
+    // ユーザーにプッシュメッセージとして商品カタログを送信
+    await client.pushMessage(userId, {
+      type: "flex",
+      altText: "商品のご案内",
+      contents: flexMessageData
+    });
+    res.send('商品カタログを送信しました');
+  } catch (error) {
+    console.error('商品カタログ送信エラー:', error);
+    res.status(500).send('エラーが発生しました');
+  }
+});
 
 // メイン処理
 async function handleEvent(event) {
@@ -51,6 +76,34 @@ async function handleEvent(event) {
       return;
     } catch (error) {
       console.error('FAQ処理エラー:', error);
+    }
+  }
+
+  // ✅ 商品カタログの表示（postback: action=show_products）
+  if (event.type === 'postback' && event.postback.data === 'action=show_products') {
+    try {
+      // 商品カタログを返信
+      return client.replyMessage(event.replyToken, {
+        type: "flex",
+        altText: "商品のご案内",
+        contents: flexMessageData
+      });
+    } catch (error) {
+      console.error('商品カタログ表示エラー:', error);
+    }
+  }
+
+  // ✅ テキストで「商品」というキーワードがあれば商品カタログを表示
+  if (event.type === 'message' && event.message.type === 'text' && event.message.text.includes('商品')) {
+    try {
+      // 商品カタログを返信
+      return client.replyMessage(event.replyToken, {
+        type: "flex",
+        altText: "商品のご案内",
+        contents: flexMessageData
+      });
+    } catch (error) {
+      console.error('商品カタログ表示エラー:', error);
     }
   }
 
